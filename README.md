@@ -125,11 +125,22 @@ batch job:
 | BigQuery storage | about 30 MB | free tier (10 GiB) |
 | BigQuery queries | a few GB scanned | free tier (1 TiB/month) |
 | dbt | runs on your machine | free |
-| Cloud Run + Scheduler (monthly refresh) | seconds per month | free tier |
-| **Dataflow batch (optional)** | one job, 1 worker, minutes | **roughly $1 to $3** |
+| **Dataflow batch** | one job, 1 worker, about 5 minutes (ran to JOB_STATE_DONE) | **under $0.50** |
 
 Services deliberately **not** used, because they are not in the free tier and the project
-does not need them: Cloud SQL, Dataproc, Cloud Composer, Datastream. See `docs/COST.md`.
+does not need them: Cloud SQL, Dataproc, Cloud Composer, Datastream. See `docs/ARCHITECTURE.md`.
+
+### Not implemented yet
+
+- **Scheduled refresh.** A Cloud Run Job plus Cloud Scheduler entry would rebuild the
+  extract monthly. The Terraform here provisions the bucket, dataset, service account, and
+  IAM roles, but the job and schedule are not wired. Region and runtime cost were sized
+  for it.
+- **Dataproc or Dataplex variant** of the transformation step, to widen the GCP service
+  coverage beyond BigQuery, GCS, IAM, and Dataflow.
+- **Transit accessibility**, using the Overture `transportation` theme instead of the
+  places theme, which barely contains transit stations for Jakarta.
+- **H3 resolution 9 drill-down** below the current resolution 8 cells.
 
 ## Honest caveats
 

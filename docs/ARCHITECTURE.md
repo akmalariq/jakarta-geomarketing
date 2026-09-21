@@ -68,6 +68,27 @@ The page fetches two JSON files. There is no API, no key, and no BigQuery call a
 so it cannot fail under load and costs nothing to host. Category detail is a separate file
 loaded only when a visitor opens a cell, which halves the initial payload.
 
+## Control check: Dataflow versus the local path
+
+The Dataflow job writes to `geomarketing.dataflow_places`, which gives a free control on
+the H3 assignment. Results after the first run:
+
+| Measure | Local path (`raw_places`) | Dataflow path (`dataflow_places`) |
+|---|---|---|
+| Rows | 289,015 | 278,469 |
+| Distinct H3 cells | 1,844 | 1,841 |
+| Rows only in one path | 10,546 local-only | 0 dataflow-only |
+
+The 10,546 row difference is **explained and expected**: exactly 10,546 places have a
+`NULL` primary category. The local DuckDB step keeps them (they still count toward
+`total_places` and land in the `other` role), while the Dataflow `DoFn` requires a
+category and drops them. Every Dataflow row exists in the local path, and no H3 cell
+assignment disagrees.
+
+**This is a real data characteristic worth knowing:** 3.6 percent of the POIs in the
+extract have no primary category, so approximately 3.6 percent of places contribute to a
+cell's total count but to neither the competitor nor the demand side of the score.
+
 ## Cost
 
 | Service | This project's usage | Free tier | Cost |

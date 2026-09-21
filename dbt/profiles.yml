@@ -1,0 +1,12 @@
+geomarketing:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: oauth
+      project: jakarta-geomarketing
+      dataset: geomarketing
+      location: us-central1
+      threads: 4
+      timeout_seconds: 300
+      priority: interactive

@@ -1,0 +1,39 @@
+[project]
+name = "jakarta-geomarketing"
+version = "0.1.0"
+description = "Location intelligence platform scoring retail and F&B site opportunities across DKI Jakarta with H3 hexagons, Overture Maps POIs, BigQuery, and dbt."
+requires-python = ">=3.12"
+dependencies = [
+    "duckdb>=1.1",
+    "h3>=4.1",
+    "pandas>=2.2",
+    "pyarrow>=17.0",
+    "google-cloud-bigquery>=3.25",
+    "google-cloud-storage>=2.18",
+]
+
+[project.optional-dependencies]
+ingest = ["overturemaps>=0.9"]
+dbt = ["dbt-bigquery>=1.8"]
+dev = ["pytest>=8.0", "ruff>=0.6"]
+
+[dependency-groups]
+dev = ["pytest>=8.3", "ruff>=0.6"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["ingestion", "export"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

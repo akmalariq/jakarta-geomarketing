@@ -1,0 +1,29 @@
+version: 2
+
+sources:
+  - name: geomarketing
+    database: jakarta-geomarketing
+    schema: geomarketing
+    description: Raw Overture Maps places for the DKI Jakarta bounding box, loaded from Cloud Storage.
+    tables:
+      - name: raw_places
+        description: One row per Overture place, flattened with latitude, longitude, and an H3 cell.
+        columns:
+          - name: id
+            description: Overture place identifier.
+            data_tests:
+              - unique
+              - not_null
+          - name: category
+            description: Overture primary category for the place.
+          - name: h3_cell
+            description: H3 cell at resolution 8 containing the place.
+            data_tests:
+              - not_null
+      - name: raw_h3_cells
+        description: One row per H3 cell in the bounding box, with boundary WKT and centre coordinates.
+        columns:
+          - name: h3_cell
+            data_tests:
+              - unique
+              - not_null

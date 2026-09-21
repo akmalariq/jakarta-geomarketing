@@ -1,0 +1,68 @@
+version: 2
+
+models:
+  - name: stg_places
+    description: Typed places with a valid location and H3 cell.
+    columns:
+      - name: id
+        data_tests:
+          - not_null
+          - unique
+      - name: h3_cell
+        data_tests:
+          - not_null
+
+  - name: int_places_classified
+    description: Places classified as competitor, demand generator, or other.
+    columns:
+      - name: place_role
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['competitor', 'demand', 'other']
+      - name: category_group
+        data_tests:
+          - accepted_values:
+              arguments:
+                values:
+                - food_and_beverage
+                - office
+                - education
+                - retail_anchor
+                - lifestyle
+                - lodging
+                - health
+                - leisure
+                - other
+
+  - name: fct_h3_cells
+    description: One row per H3 cell with the opportunity score and its components.
+    columns:
+      - name: h3_cell
+        data_tests:
+          - not_null
+          - unique
+      - name: opportunity_score
+        data_tests:
+          - not_null
+      - name: opportunity_tier
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['prime', 'strong', 'moderate', 'low']
+      - name: boundary_wkt
+        data_tests:
+          - not_null
+
+  - name: fct_cell_category_mix
+    description: Category mix per cell for the dashboard detail panel.
+    columns:
+      - name: h3_cell
+        data_tests:
+          - not_null
+      - name: place_role
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['competitor', 'demand']

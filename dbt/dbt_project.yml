@@ -1,0 +1,31 @@
+name: geomarketing
+version: "1.0.0"
+profile: geomarketing
+
+model-paths: ["models"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+target-path: target
+clean-targets: ["target", "dbt_packages"]
+
+# Business rules for the opportunity score. Kept as variables so the weighting is
+# explicit, reviewable, and testable rather than buried in SQL.
+vars:
+  h3_resolution: 8
+  min_places_per_cell: 25
+  weight_demand: 0.55
+  weight_diversity: 0.25
+  weight_low_competition: 0.20
+
+models:
+  geomarketing:
+    staging:
+      +materialized: view
+      +schema: staging
+    intermediate:
+      +materialized: view
+      +schema: intermediate
+    marts:
+      +materialized: table
+      +schema: marts
